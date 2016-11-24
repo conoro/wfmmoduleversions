@@ -1,7 +1,7 @@
 # wfmmoduleversions
 Find what WFM/Raincatcher module versions were shipped with each version of RHMAP
 
-See http://feedhenry.org/
+See Raincatcher info on http://feedhenry.org/
 
 It grabs all of the tags from https://api.github.com/repos/feedhenry-raincatcher/raincatcher-demo-cloud/tags
 
@@ -13,3 +13,5 @@ Then it retrives the package.json for the tag you select in the dropdown for eac
 * https://github.com/feedhenry-raincatcher/raincatcher-demo-auth
 
 And shows the versions.
+
+Live version accessible via: http://conoroneill.net/wfmmoduleversions/
