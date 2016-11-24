@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>WFM Module Versions</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+  <h2>WFM Module Versions</h2>
+  <p>
+    Note, tag list is pulled from the raincatcher-demo-cloud repo.
+  </p>
+  <div class="dropdown" id="rhmap-list">
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      Select RHMAP Version
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    </ul>
+  </div>
+
+	<h3>From raincatcher-demo-auth</h3>
+	<table id="table1">
+			<thead>
+			<tr>
+					<th data-field="module" class="col-md-3">Module</th>
+					<th data-field="version" class="col-md-3">Versions</th>
+			</tr>
+			</thead>
+	</table>
+
+  <h3>From raincatcher-demo-cloud</h3>
+  <table id="table2">
+      <thead>
+      <tr>
+          <th data-field="module" class="col-md-3">Module</th>
+          <th data-field="version" class="col-md-3">Versions</th>
+      </tr>
+      </thead>
+  </table>
+
+  <h3>From raincatcher-demo-portal</h3>
+  <table id="table3">
+      <thead>
+      <tr>
+          <th data-field="module" class="col-md-3">Module</th>
+          <th data-field="version" class="col-md-3">Versions</th>
+      </tr>
+      </thead>
+  </table>
+
+  <h3>From raincatcher-demo-mobile</h3>
+  <table id="table4">
+      <thead>
+      <tr>
+          <th data-field="module" class="col-md-3">Module</th>
+          <th data-field="version" class="col-md-3">Versions</th>
+      </tr>
+      </thead>
+  </table>
+
+</div>
+
+<script>
+$(document).ready(function(){
+
+  $.ajax({
+  	 url: 'https://api.github.com/repos/feedhenry-raincatcher/raincatcher-demo-cloud/tags',
+  	 headers: {
+  	 Accept: "application/vnd.github.3.raw"
+  	 },
+  	 data: {
+  			format: 'json'
+  	 },
+  	 error: function() {
+  			$('#info').html('<p>An error has occurred</p>');
+  	 },
+  	 dataType: 'json',
+  	 success: function(data) {
+  		 console.log(data);
+       for( var index in data ) {
+           console.log(data[index].name);
+           $('#rhmap-list ul').append('<li><a href="#" data-value="'+data[index].name+'">'+data[index].name+'</a></li>');     }
+  	 },
+  	 type: 'GET'
+  });
+
+
+$(document).on('click', '.dropdown-menu li a', function(){
+//$(".dropdown-menu li a").click(function(){
+  var version = $(this).data('value');
+  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+
+  var $table1 = $('#table1');
+  var deps1;
+  $.ajax({
+  	 url: 'https://raw.githubusercontent.com/feedhenry-raincatcher/raincatcher-demo-auth/'+ version +'/package.json',
+  	 headers: {
+  	 Accept: "application/vnd.github.3.raw"
+  	 },
+  	 data: {
+  			format: 'json'
+  	 },
+  	 error: function() {
+  			$('#info').html('<p>An error has occurred</p>');
+  	 },
+  	 dataType: 'json',
+  	 success: function(data) {
+  		 console.log(data.dependencies);
+  		 deps1 = [
+  				 {
+  						 "module": "fh-mbaas-api",
+  						 "version": data.dependencies["fh-mbaas-api"]
+  				 },
+  				 {
+  						 "module": "fh-wfm-mediator",
+  						 "version": data.dependencies["fh-wfm-mediator"]
+  				 },
+  				 {
+  						 "module": "fh-wfm-user",
+  						 "version": data.dependencies["fh-wfm-user"]
+  				 }
+  		 ];
+  		 console.log(deps1);
+       $table1.bootstrapTable("destroy");
+       $table1.bootstrapTable({data: deps1});
+  	 },
+  	 type: 'GET'
+  });
+
+  var $table2 = $('#table2');
+  var deps2;
+  $.ajax({
+  	 url: 'https://raw.githubusercontent.com/feedhenry-raincatcher/raincatcher-demo-cloud/'+ version +'/package.json',
+  	 headers: {
+  	 Accept: "application/vnd.github.3.raw"
+  	 },
+  	 data: {
+  			format: 'json'
+  	 },
+  	 error: function() {
+  			$('#info').html('<p>An error has occurred</p>');
+  	 },
+  	 dataType: 'json',
+  	 success: function(data) {
+  		 console.log(data.dependencies);
+
+  		 deps2 = [
+  				 {
+  						 "module": "fh-mbaas-api",
+  						 "version": data.dependencies["fh-mbaas-api"]
+  				 },
+  				 {
+  						 "module": "fh-wfm-mediator",
+  						 "version": data.dependencies["fh-wfm-mediator"]
+  				 },
+  				 {
+  						 "module": "fh-wfm-user",
+  						 "version": data.dependencies["fh-wfm-user"]
+  				 },
+           {
+  						 "module": "fh-wfm-appform",
+  						 "version": data.dependencies["fh-wfm-appform"]
+  				 },
+           {
+  						 "module": "fh-wfm-file",
+  						 "version": data.dependencies["fh-wfm-file"]
+  				 },
+           {
+  						 "module": "fh-wfm-message",
+  						 "version": data.dependencies["fh-wfm-message"]
+  				 },
+           {
+  						 "module": "fh-wfm-result",
+  						 "version": data.dependencies["fh-wfm-result"]
+  				 },
+           {
+  						 "module": "fh-wfm-workflow",
+  						 "version": data.dependencies["fh-wfm-workflow"]
+  				 },
+           {
+  						 "module": "fh-wfm-workorder",
+  						 "version": data.dependencies["fh-wfm-workorder"]
+  				 }
+  		 ];
+  		 console.log(deps2);
+       $table2.bootstrapTable("destroy");
+  		 $table2.bootstrapTable({data: deps2});
+  	 },
+  	 type: 'GET'
+  });
+
+  var $table3 = $('#table3');
+  var deps3;
+  $.ajax({
+  	 url: 'https://raw.githubusercontent.com/feedhenry-raincatcher/raincatcher-demo-portal/'+ version +'/package.json',
+  	 headers: {
+  	 Accept: "application/vnd.github.3.raw"
+  	 },
+  	 data: {
+  			format: 'json'
+  	 },
+  	 error: function() {
+  			$('#info').html('<p>An error has occurred</p>');
+  	 },
+  	 dataType: 'json',
+  	 success: function(data) {
+  		 console.log(data.dependencies);
+  		 deps3 = [
+           {
+               "module": "fh-js-sdk",
+               "version": data.dependencies["fh-js-sdk"]
+           },
+  				 {
+  						 "module": "fh-wfm-mediator",
+  						 "version": data.dependencies["fh-wfm-mediator"]
+  				 },
+  				 {
+  						 "module": "fh-wfm-user",
+  						 "version": data.dependencies["fh-wfm-user"]
+  				 },
+           {
+  						 "module": "fh-wfm-analytics",
+  						 "version": data.dependencies["fh-wfm-analytics"]
+  				 },
+           {
+  						 "module": "fh-wfm-appform",
+  						 "version": data.dependencies["fh-wfm-appform"]
+  				 },
+           {
+  						 "module": "fh-wfm-camera",
+  						 "version": data.dependencies["fh-wfm-camera"]
+  				 },
+           {
+  						 "module": "fh-wfm-file",
+  						 "version": data.dependencies["fh-wfm-file"]
+  				 },
+           {
+  						 "module": "fh-wfm-map",
+  						 "version": data.dependencies["fh-wfm-map"]
+  				 },
+           {
+  						 "module": "fh-wfm-message",
+  						 "version": data.dependencies["fh-wfm-message"]
+  				 },
+           {
+  						 "module": "fh-wfm-result",
+  						 "version": data.dependencies["fh-wfm-result"]
+  				 },
+           {
+  						 "module": "fh-wfm-risk-assessment",
+  						 "version": data.dependencies["fh-wfm-risk-assessment"]
+  				 },
+           {
+  						 "module": "fh-wfm-schedule",
+  						 "version": data.dependencies["fh-wfm-schedule"]
+  				 },
+           {
+  						 "module": "fh-wfm-sync",
+  						 "version": data.dependencies["fh-wfm-sync"]
+  				 },
+           {
+  						 "module": "fh-wfm-vehicle-inspection",
+  						 "version": data.dependencies["fh-wfm-vehicle-inspection"]
+  				 },
+           {
+  						 "module": "fh-wfm-workflow",
+  						 "version": data.dependencies["fh-wfm-workflow"]
+  				 },
+           {
+  						 "module": "fh-wfm-workorder",
+  						 "version": data.dependencies["fh-wfm-workorder"]
+  				 }
+  		 ];
+
+  		 console.log(deps3);
+       $table3.bootstrapTable("destroy");
+  		 $table3.bootstrapTable({data: deps3});
+  	 },
+  	 type: 'GET'
+  });
+
+  var $table4 = $('#table4');
+  var deps4;
+  $.ajax({
+  	 url: 'https://raw.githubusercontent.com/feedhenry-raincatcher/raincatcher-demo-mobile/'+ version +'/package.json',
+  	 headers: {
+  	 Accept: "application/vnd.github.3.raw"
+  	 },
+  	 data: {
+  			format: 'json'
+  	 },
+  	 error: function() {
+  			$('#info').html('<p>An error has occurred</p>');
+  	 },
+  	 dataType: 'json',
+  	 success: function(data) {
+  		 console.log(data.dependencies);
+  		 deps4 = [
+         {
+             "module": "fh-wfm-mediator",
+             "version": data.dependencies["fh-wfm-mediator"]
+         },
+         {
+             "module": "fh-wfm-user",
+             "version": data.dependencies["fh-wfm-user"]
+         },
+         {
+             "module": "fh-wfm-appform",
+             "version": data.dependencies["fh-wfm-appform"]
+         },
+         {
+             "module": "fh-wfm-camera",
+             "version": data.dependencies["fh-wfm-camera"]
+         },
+         {
+             "module": "fh-wfm-file",
+             "version": data.dependencies["fh-wfm-file"]
+         },
+         {
+             "module": "fh-wfm-map",
+             "version": data.dependencies["fh-wfm-map"]
+         },
+         {
+             "module": "fh-wfm-message",
+             "version": data.dependencies["fh-wfm-message"]
+         },
+         {
+             "module": "fh-wfm-result",
+             "version": data.dependencies["fh-wfm-result"]
+         },
+         {
+             "module": "fh-wfm-risk-assessment",
+             "version": data.dependencies["fh-wfm-risk-assessment"]
+         },
+         {
+             "module": "fh-wfm-sync",
+             "version": data.dependencies["fh-wfm-sync"]
+         },
+         {
+             "module": "fh-wfm-vehicle-inspection",
+             "version": data.dependencies["fh-wfm-vehicle-inspection"]
+         },
+         {
+             "module": "fh-wfm-workflow",
+             "version": data.dependencies["fh-wfm-workflow"]
+         },
+         {
+             "module": "fh-wfm-workorder",
+             "version": data.dependencies["fh-wfm-workorder"]
+         },
+         {
+             "module": "fh-wfm-signature",
+             "version": data.dependencies["fh-wfm-signature"]
+         }
+  		 ];
+
+  		 console.log(deps4);
+       $table4.bootstrapTable("destroy");
+  		 $table4.bootstrapTable({data: deps4});
+  	 },
+  	 type: 'GET'
+  });
+});
+});
+
+</script>
+<div class="container">
+  <br />
+  Copyright Conor O'Neill 2016
+</div>
+</body>
+</html>
